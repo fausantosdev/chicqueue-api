@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+enum Type {
+  user
+  admin
+}
+
+model User {
+  id                   Int        @id @unique @default(autoincrement())
+  name                 String
+  username             String     @unique
+  phone                String     @unique
+  email                String     @unique
+  password             String
+  type                 Type       @default(user)    
+  passwordResetToken   String?
+  passwordResetExpires String?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  schedules            Schedule[]
+
+  // Relacionamento 1 para 1 com o modelo File
+  avatar                 File?
+}
+
+model Schedule {
+  id        Int @id @unique @default(autoincrement())
+  date      DateTime @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    Int   
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model File {
+  id        Int @id @unique @default(autoincrement())
+  name      String @unique
+  type      String 
+  url       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento 1 para 1 com o modelo User
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+}
