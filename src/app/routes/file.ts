@@ -1,25 +1,25 @@
 import { Router } from 'express'
 
 import { FileController } from '../controllers/FileController'
- 
+
 import { isAdmin } from '../middlewares/auth'
 
 class FileRoutes {
-    private router: Router
-    private fileController: FileController
+  private readonly router: Router
+  private readonly fileController: FileController
 
-    constructor() {
-        this.router = Router()
-        this.fileController = new FileController()
-    }
+  constructor () {
+    this.router = Router()
+    this.fileController = new FileController()
+  }
 
-    getRoutes() {
-        this.router.use(isAdmin)
+  getRoutes () {
+    this.router.use(isAdmin)
 
-        this.router.get('/:id?', this.fileController.index.bind(this.fileController))
+    this.router.get('/:id?', this.fileController.index.bind(this.fileController))
 
-        return this.router    
-    }
+    return this.router
+  }
 }
 
 export { FileRoutes }

@@ -6,7 +6,8 @@
    "scripts": {
       "start": "node ./build",
       "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn ./src",
-      "build": "rm -rf build && npx tsc"
+      "build": "rm -rf build && npx tsc",
+      "fix": "eslint --fix ./src --ext .ts"
    },
    "repository": {
       "type": "git",

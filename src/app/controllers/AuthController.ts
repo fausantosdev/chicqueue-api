@@ -4,51 +4,51 @@ import * as Yup from 'yup'
 import { AuthService } from '../services/AuthService'
 
 class AuthController {
-    private authService: AuthService
-    constructor() {
-        this.authService = new AuthService()
+  private readonly authService: AuthService
+  constructor () {
+    this.authService = new AuthService()
+  }
+
+  async login (req: Request, res: Response, next: NextFunction) {
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string().email().required('E-mail é obrigatório'),
+        password: Yup.string().required('Senha é obrigatória')
+      })
+
+      await schema.validate(req.body, { abortEarly: false })
+
+      const result = await this.authService.login(req.body)
+
+      return res.status(201).json({
+        status: true,
+        data: result,
+        message: null
+      })
+    } catch (error: any) {
+      next(error)
     }
+  }
 
-    async login(req: Request, res: Response, next: NextFunction) {
-        try {
-            const schema = Yup.object().shape({
-                email: Yup.string().email().required('E-mail é obrigatório'),
-                password: Yup.string().required('Senha é obrigatória')
-            })
-            
-            await schema.validate(req.body, { abortEarly: false })
-            
-            const result = await this.authService.login(req.body)
+  async tokenRefresh (req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization!.split(' ')[1]
 
-            return res.status(201).json({
-                status: true,
-                data: result,
-                message: null
-            })
-        } catch (error: any) {
-            next(error)
-        }    
+    try {
+      /* console.log('a')
+            return */
+      const result = await this.authService.refreshToken(token)
+
+      return res.status(200).json({
+        status: true,
+        data: result,
+        message: ''
+      })
+    } catch (error: any) {
+      next(error)
     }
+  }
 
-    async tokenRefresh (req: Request, res: Response, next: NextFunction) {
-        const token = req.headers.authorization!.split(' ')[1]
-
-        try {
-            /*console.log('a')
-            return*/
-            const result = await this.authService.refreshToken(token)
-
-            return res.status(200).json({
-                status: true,
-                data: result,
-                message: ''
-            })
-        } catch (error: any) {
-            next(error)
-        }
-    }
-
-    /*logout(req, res) {
+  /* logout(req, res) {
         try {
             delete req.user
 
@@ -94,7 +94,7 @@ class AuthController {
                 message: error.message,
             })
         }
-    }*/
+    } */
 }
 
 export { AuthController }

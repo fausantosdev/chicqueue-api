@@ -21,21 +21,20 @@ routes.use('/file', fileRoutes)
 routes.use('/schedule', scheduleRoutes)
 
 routes.use((err: Error | CustomException, req: Request, res: Response, next: NextFunction) => {
-            
-    if (err instanceof Error){
-        return res.status(400).json({
-            status: false,
-            data: null,
-            message: err instanceof Yup.ValidationError ? err.errors : err.message,
-            stack: err.stack
-        })
-    }
-
-    return res.status(err.code).json({
-        status: false,
-        data: null,
-        message: err.message
+  if (err instanceof Error) {
+    return res.status(400).json({
+      status: false,
+      data: null,
+      message: err instanceof Yup.ValidationError ? err.errors : err.message,
+      stack: err.stack
     })
+  }
+
+  return res.status(err.code).json({
+    status: false,
+    data: null,
+    message: err.message
+  })
 })
 
 export default routes

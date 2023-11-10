@@ -7,45 +7,45 @@ import { FileRepository } from '../repositories/FileRepository'
 import { FileType } from '../../types/FileType'
 
 class FileService {
-    private fileRepository: FileRepository
+  private readonly fileRepository: FileRepository
 
-    constructor() {
-        this.fileRepository = new FileRepository
-    }
+  constructor () {
+    this.fileRepository = new FileRepository()
+  }
 
-    async create () {  
-        
-    }
+  async create () {
 
-    async read (where: Prisma.UserWhereUniqueInput | {}) {
-        const result = await this.fileRepository.read(where)
+  }
 
-        if ( !result ) throw new CustomException('Arquivo não encontrado')
+  async read (where: Prisma.UserWhereUniqueInput | {}) {
+    const result = await this.fileRepository.read(where)
 
-        return result
-    }
+    if (!result) throw new CustomException('Arquivo não encontrado')
 
-    async readOne (where: Prisma.FileWhereUniqueInput) {
-        const result = await this.fileRepository.readOne(where)
+    return result
+  }
 
-        if(!result) throw new CustomException('Arquivo não encontrado')
+  async readOne (where: Prisma.FileWhereUniqueInput) {
+    const result = await this.fileRepository.readOne(where)
 
-        return result
-    }
+    if (!result) throw new CustomException('Arquivo não encontrado')
 
-    async update (data: {}, file: FileType, where: Prisma.UserWhereUniqueInput) {
-      
-    }
+    return result
+  }
 
-    async delete (where: Prisma.FileWhereUniqueInput) {
-        const userExists = await this.fileRepository.readOne(where)
+  async update (data: {}, file: FileType, where: Prisma.UserWhereUniqueInput) {
 
-        if(!userExists) throw new CustomException('Usuário não encontrado')
-       
-        const userDeleted = await this.fileRepository.delete(where)
+  }
 
-        return userDeleted
-    }
+  async delete (where: Prisma.FileWhereUniqueInput) {
+    const userExists = await this.fileRepository.readOne(where)
+
+    if (!userExists) throw new CustomException('Usuário não encontrado')
+
+    const userDeleted = await this.fileRepository.delete(where)
+
+    return userDeleted
+  }
 }
 
 export { FileService }

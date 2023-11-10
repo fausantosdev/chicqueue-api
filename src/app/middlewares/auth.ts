@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 
 import { promisify } from 'util'
 
-import authConfig  from '../../config/auth'
+import authConfig from '../../config/auth'
 
 import CustomException from '../../utils/CustomException'
 
@@ -22,9 +22,9 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     return next()
   } catch (error: any) {
     return res.status(401).json({
-       status: false,
-       data: null,
-       message: error.message
+      status: false,
+      data: null,
+      message: error.message
     })
   }
 }
@@ -32,9 +32,9 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   verifyToken(req, res, () => {
     try {
-      if(req.user.type === 'admin'){
+      if (req.user.type === 'admin') {
         return next()
-      }else{
+      } else {
         return res.json({
           status: false,
           data: null,
@@ -43,9 +43,9 @@ const isAdmin = (req: Request, res: Response, next: NextFunction) => {
       }
     } catch (err: any) {
       return res.status(401).json({
-         status: false,  
-         data: null,
-         message: err.message
+        status: false,
+        data: null,
+        message: err.message
       })
     }
   })
@@ -54,10 +54,10 @@ const isAdmin = (req: Request, res: Response, next: NextFunction) => {
 const checkUserOrIsAdmin = (req: Request, res: Response, next: NextFunction) => {
   verifyToken(req, res, () => {
     try {
-      //console.log( typeof Number(req.params.id))
-      if(req.user.id === parseInt(req.params.id) || req.user.type === 'admin'){
+      // console.log( typeof Number(req.params.id))
+      if (req.user.id === parseInt(req.params.id) || req.user.type === 'admin') {
         return next()
-      }else{
+      } else {
         return res.json({
           status: false,
           data: null,
@@ -66,9 +66,9 @@ const checkUserOrIsAdmin = (req: Request, res: Response, next: NextFunction) => 
       }
     } catch (err: any) {
       return res.status(401).json({
-         status: false,  
-         data: null,
-         message: err.message
+        status: false,
+        data: null,
+        message: err.message
       })
     }
   })

@@ -9,134 +9,132 @@ import { UserRepository } from '../repositories/UserRepository'
 
 import mailer from '../../modules/mailer'
 
-type TypeLogin = {
-    email: string
-    password: string
+interface TypeLogin {
+  email: string
+  password: string
 }
 
-type JwtPayload = { 
-    user: {
-        id: number
-        username: string 
-        email: string
-        type: string
-    } 
+interface JwtPayload {
+  user: {
+    id: number
+    username: string
+    email: string
+    type: string
+  }
 }
 
 class AuthService {
-    private userRepository: UserRepository
+  private readonly userRepository: UserRepository
 
-    constructor() {
-        this.userRepository = new UserRepository
+  constructor () {
+    this.userRepository = new UserRepository()
+  }
+
+  async login ({ email, password }: TypeLogin) {
+    const user = await this.userRepository.readOne({ email })
+
+    if (!user) throw new CustomException('Email ou senha inválidos')
+
+    if (!(await compare(password, user.password))) throw new CustomException('Email ou senha inválidos')// 1:39:49
+
+    const { id, username, type } = user
+
+    const token = this.generateToken({ user: { id, username, email, type } })
+
+    return {
+      user: {
+        id,
+        username,
+        type
+      },
+      token
     }
+  }
 
-    async login ({ email, password }: TypeLogin) {
-                    
-        const user = await this.userRepository.readOne({ email })
+  async refreshToken (token: string) {
+    const decoded = this.decodeToken(token)
 
-        if(!user) throw new CustomException('Email ou senha inválidos')
+    const { user } = decoded as JwtPayload
 
-        if(!(await compare(password, user.password))) throw new CustomException('Email ou senha inválidos')// 1:39:49
+    const userExists = await this.userRepository.readOne({ email: user.email })
 
-        const { id, username, type } = user
+    if (!userExists) throw new CustomException('Token inválido [rt]')
 
-        const token = this.generateToken({ user: { id, username, email, type } })
+    const { id, username, email, type } = userExists
 
-        return {
-            user: {
-                id,
-                username,
-                type
-            },
-            token
-        }
+    const newToken = this.generateToken({ user: { id, username, email, type } })
+
+    return {
+      user: {
+        id,
+        username,
+        type
+      },
+      newToken
     }
+  }
 
-    async refreshToken (token: string) {
-        const decoded = this.decodeToken(token)
+  async forgotPassword (email: string) {
+    // const user = await UserRepository.readOne({ email })
 
-        const { user } = decoded as JwtPayload
+    // if(!user) throw new CustomException('E-mail não cadastrado no sistema')
 
-        const userExists = await this.userRepository.readOne({ email: user.email })
-        
-        if (!userExists) throw new CustomException('Token inválido [rt]')
+    // const token = crypto.randomBytes(20).toString('hex')// Gera o token
 
-        const { id, username, email, type } = userExists
+    // const now = new Date()// Data de expiração do token
 
-        const newToken = this.generateToken({ user: { id, username, email, type } })
+    // now.setHours(now.getHours() + 1)// Expira em 1 hora
 
-        return {
-            user: { 
-                id, 
-                username,
-                type 
-            },
-            newToken
-        }
-    }
+    // const updated = await UserRepository.update({ password_reset_token: token, password_reset_expires: now }, { id: user.id })
 
-    async forgotPassword(email: string) {
-        //const user = await UserRepository.readOne({ email })
+    // if(!updated) throw new CustomException('Ocorreu um erro ao redefinir sua senha, por favor tente mais tarde. [1]')
 
-        //if(!user) throw new CustomException('E-mail não cadastrado no sistema')
-        
-        //const token = crypto.randomBytes(20).toString('hex')// Gera o token
+    // const mailSended = await mailer.sendMail({
+    //    from: 'flavio-_santos@hotmail.com',
+    //    to: user.email,
+    //    subject: '[NodeJS Base API] - Recuperação de Senha',
+    //    text: 'Este é p token para recuperar sua senha',
+    //    template: 'mail',
+    //    context: {
+    //        token
+    //    }
+    // })
 
-        //const now = new Date()// Data de expiração do token
+    // return {
+    //    user
+    // }
+  }
 
-        //now.setHours(now.getHours() + 1)// Expira em 1 hora
+  async resetPassword (token: string, email: string, newPassword: string) {
+    // const user = await UserRepository.readOne({ email })
 
-        //const updated = await UserRepository.update({ password_reset_token: token, password_reset_expires: now }, { id: user.id })
+    // if (!user) throw new CustomException('Email não cadastrado no sistema')
 
-        //if(!updated) throw new CustomException('Ocorreu um erro ao redefinir sua senha, por favor tente mais tarde. [1]')
+    // Verificar se o token for nulo?
+    // if (token !== user.password_reset_token) throw new CustomException('Token inválido')
 
-        //const mailSended = await mailer.sendMail({
-        //    from: 'flavio-_santos@hotmail.com',
-        //    to: user.email,
-        //    subject: '[NodeJS Base API] - Recuperação de Senha',
-        //    text: 'Este é p token para recuperar sua senha',
-        //    template: 'mail',
-        //    context: {
-        //        token
-        //    }
-        //})
+    // const now = new Date()
 
-        //return {
-        //    user
-        //}
-    }
+    // if (now > user.passwordResetExpires) throw new CustomException('Token expirado, solicite um novo')
 
-    async resetPassword (token: string, email: string, newPassword: string) {
-        //const user = await UserRepository.readOne({ email })
+    // const result = await UserRepository.update({
+    //    password: newPassword,
+    //    password_reset_token: null,
+    //    password_reset_expires: null
+    // }, { id: user.id })
 
-        //if (!user) throw new CustomException('Email não cadastrado no sistema')
-        
-        // Verificar se o token for nulo?
-        //if (token !== user.password_reset_token) throw new CustomException('Token inválido')
-        
-        //const now = new Date()
- 
-        //if (now > user.passwordResetExpires) throw new CustomException('Token expirado, solicite um novo')
-    
-        //const result = await UserRepository.update({
-        //    password: newPassword,
-        //    password_reset_token: null,
-        //    password_reset_expires: null
-        //}, { id: user.id })
+    // if (!result) throw new CustomException('Ocorreu um erro ao atualizar sua senha, por favor, tente novamente')
 
-        //if (!result) throw new CustomException('Ocorreu um erro ao atualizar sua senha, por favor, tente novamente')
+    // return true
+  }
 
-        //return true
-    }
+  private generateToken (payload: any) {
+    return sign(payload, authConfig.secret as string, { expiresIn: authConfig.expiresIn })
+  }
 
-    private generateToken (payload: any) {
-        return sign(payload, authConfig.secret as string, { expiresIn: authConfig.expiresIn })
-    }
-
-    private decodeToken (token: string) {
-        return verify(token, authConfig.secret as string)
-    }
+  private decodeToken (token: string) {
+    return verify(token, authConfig.secret as string)
+  }
 }
 
 export { AuthService }
-
