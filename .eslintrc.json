@@ -13,6 +13,8 @@
     },
     "rules": {
         "@typescript-eslint/quotes": ["error", "single"],
-        "@typescript-eslint/strict-boolean-expressions": "off"
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-invalid-void-type": "off"
     }
 }
