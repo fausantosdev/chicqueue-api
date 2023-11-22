@@ -7,7 +7,7 @@ import CustomException from '../../utils/CustomException'
 
 import { UserRepository } from '../repositories/UserRepository'
 
-import mailer from '../../modules/mailer'
+import mailer from '../../services/mailer'
 
 interface TypeLogin {
   email: string
