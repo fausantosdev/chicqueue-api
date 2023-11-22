@@ -1,10 +1,8 @@
-class CustomException {
-  message: string
+export default class CustomException extends Error {
   code: number
 
   constructor (message: string, code = 200) {
-    this.message = message
+    super()
     this.code = code
   }
 }
-export default CustomException
