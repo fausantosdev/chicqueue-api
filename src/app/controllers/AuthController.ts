@@ -9,7 +9,7 @@ class AuthController {
     this.authService = new AuthService()
   }
 
-  async login (req: Request, res: Response, next: NextFunction) {
+  async login (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
       const schema = Yup.object().shape({
         email: Yup.string().email().required('E-mail é obrigatório'),
@@ -30,7 +30,7 @@ class AuthController {
     }
   }
 
-  async tokenRefresh (req: Request, res: Response, next: NextFunction) {
+  async tokenRefresh (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const token = req.headers.authorization!.split(' ')[1]
 
     try {

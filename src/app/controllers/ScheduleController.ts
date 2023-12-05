@@ -10,7 +10,7 @@ class ScheduleController {
     this.scheduleService = new ScheduleService()
   }
 
-  async index (req: Request, res: Response, next: NextFunction) {
+  async index (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const id = req.params.id ? Number(req.params.id) : null
 
     let result = null
@@ -39,7 +39,7 @@ class ScheduleController {
     }
   }
 
-  async store (req: Request, res: Response, next: NextFunction) {
+  async store (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
       const schema = Yup.object().shape({
         date: Yup.date().required('Data é obrigatória')
@@ -62,7 +62,7 @@ class ScheduleController {
     }
   }
 
-  async update (req: Request, res: Response, next: NextFunction) {
+  async update (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const { id } = req.params
 
     try {
@@ -78,7 +78,7 @@ class ScheduleController {
     }
   }
 
-  async remove (req: Request, res: Response, next: NextFunction) {
+  async remove (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const { id } = req.params
 
     try {

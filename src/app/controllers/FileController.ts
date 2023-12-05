@@ -9,7 +9,7 @@ class FileController {
     this.fileService = new FileService()
   }
 
-  async index (req: Request, res: Response, next: NextFunction) {
+  async index (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const id = req.params.id ? Number(req.params.id) : null
 
     // console.log(id)
@@ -30,13 +30,13 @@ class FileController {
     }
   }
 
-  async store (req: Request, res: Response, next: NextFunction) {
+  async store (req: Request, res: Response, next: NextFunction): Promise<any> {
   }
 
-  async update (req: Request, res: Response, next: NextFunction) {
+  async update (req: Request, res: Response, next: NextFunction): Promise<any> {
   }
 
-  async remove (req: Request, res: Response, next: NextFunction) {
+  async remove (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const { id } = req.params
 
     try {

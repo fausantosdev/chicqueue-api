@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 
 import { UserService } from '../services/UserService'
 
-import { FileType } from '../../types/FileType'
+import { FileType } from '../../shared/types/FileType'
 
 class UserController {
   private readonly userService: UserService
@@ -12,7 +12,7 @@ class UserController {
     this.userService = new UserService()
   }
 
-  async index(req: Request, res: Response, next: NextFunction) {
+  async index (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const id = req.params.id ? Number(req.params.id) : null
 
     let result = null
@@ -30,7 +30,7 @@ class UserController {
     }
   }
 
-  async store(req: Request, res: Response, next: NextFunction) {
+  async store (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
       const schema = Yup.object().shape({
         name: Yup.string().required('Nome é obrigatório'),
@@ -57,7 +57,7 @@ class UserController {
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async update (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const { id } = req.params
 
     try {
@@ -73,7 +73,7 @@ class UserController {
     }
   }
 
-  async remove(req: Request, res: Response, next: NextFunction) {
+  async remove (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     const { id } = req.params
 
     try {
