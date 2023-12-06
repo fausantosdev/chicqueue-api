@@ -1,12 +1,9 @@
-import express, { Express, Request, Response, NextFunction } from 'express'
+import express, { Express } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import path from 'path'
-import * as Yup from 'yup'
 
 import routes from './app/routes'
-
-import { convertErrorCode } from './utils/functions'
 
 class App {
   server: Express
